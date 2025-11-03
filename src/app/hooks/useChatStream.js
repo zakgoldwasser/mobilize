@@ -192,6 +192,7 @@ export function useChatStream() {
                   }));
                 }
               } else if (data.type === "done") {
+                setIsSubmitting(false);
                 // Stream is complete
                 // Process file citations if any
                 const messageIndex = currentMessages.length - 1;
@@ -270,7 +271,6 @@ export function useChatStream() {
           return updated;
         });
       } finally {
-        setIsSubmitting(false);
       }
     },
     [conversationId, isSubmitting, messages.length]
