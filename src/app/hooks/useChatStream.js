@@ -173,15 +173,11 @@ export function useChatStream() {
                 if (data.annotation?.type === "file_citation") {
                   // Store citation with the current message index
                   const messageIndex = currentMessages.length - 1;
-                  console.log("messageIndex");
-                  console.log(messageIndex);
 
                   // Initialize the array for this message index if needed
                   if (!currentMessageCitations[messageIndex]) {
                     currentMessageCitations[messageIndex] = [];
                   }
-                  console.log("currentMessageCitations");
-                  console.log(currentMessageCitations);
 
                   // Add the citation to our local tracking array
                   currentMessageCitations[messageIndex].push(data.annotation);
@@ -199,8 +195,7 @@ export function useChatStream() {
                 // Stream is complete
                 // Process file citations if any
                 const messageIndex = currentMessages.length - 1;
-                console.log("messageIndex2");
-                console.log(messageIndex);
+
                 // Use our local data structure instead of the state
                 const messageCitations =
                   currentMessageCitations[messageIndex] || [];
@@ -215,8 +210,7 @@ export function useChatStream() {
                       const fileContent = await fetchFileContent(
                         citation.file_id
                       );
-                      console.log("fileContent");
-                      console.log(fileContent);
+
                       if (fileContent) {
                         // Update our local array instead of state
                         updatedCitations[i] = {

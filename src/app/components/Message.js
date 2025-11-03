@@ -51,9 +51,8 @@ export default function Message({
         }`}
       >
         <p className="text-sm whitespace-pre-wrap">{formattedContent}</p>
-        {!isUser && citations && citations.length > 0 && !isStreaming && (
-          <CitationCarousel citations={citations} />
-        )}
+
+        <CitationCarousel citations={citations} />
       </div>
     </div>
   );
