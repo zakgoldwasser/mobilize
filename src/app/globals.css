@@ -24,3 +24,48 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.carousel-outer::after,
+.carousel-outer::before {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  content: "";
+  width: 75px;
+  height: 100%;
+
+  opacity: 0;
+  transition: opacity 200ms ease-in;
+}
+
+.carousel-outer::after {
+  right: 0;
+  background: linear-gradient(to left, #f4f4f5 55%, rgba(255, 255, 255, 0));
+}
+.carousel-outer::before {
+  left: 0;
+  background: linear-gradient(to right, #f4f4f5 55%, rgba(255, 255, 255, 0));
+}
+
+.carousel-outer.right-arrow::after,
+.carousel-outer.left-arrow::before {
+  opacity: 1;
+}
+
+.skeleton-card *:not(.content-container) {
+  background-image: linear-gradient(90deg, #ddd 0px, #e8e8e8 40px, #ddd 80px);
+  background-size: 600px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
