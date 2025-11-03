@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   sendChatMessage,
   createStreamDecoder,
@@ -8,15 +8,95 @@ import {
 } from "../services/chatService";
 import { fetchFileContent } from "../services/fileService";
 
+// Constants for localStorage keys
+const STORAGE_KEY = "mobilize_chat_data";
+
+/**
+ * Safely checks if localStorage is available
+ * @returns {boolean} - Whether localStorage is available
+ */
+const isLocalStorageAvailable = () => {
+  try {
+    const testKey = "__test__";
+    localStorage.setItem(testKey, testKey);
+    localStorage.removeItem(testKey);
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+/**
+ * Safely stores data in localStorage with size limits
+ * @param {string} key - The key to store data under
+ * @param {Object} data - The data to store
+ * @returns {boolean} - Whether the operation was successful
+ */
+const safelyStoreData = (key, data) => {
+  try {
+    const serialized = JSON.stringify(data);
+    // Check if data is too large (5MB is a common limit)
+    if (serialized.length > 4 * 1024 * 1024) {
+      console.warn("Data too large for localStorage, not saving");
+      return false;
+    }
+    localStorage.setItem(key, serialized);
+    return true;
+  } catch (error) {
+    console.error("Error storing data in localStorage:", error);
+    return false;
+  }
+};
+
 /**
  * Custom hook to handle chat streaming functionality
  * @returns {Object} - Chat streaming state and functions
  */
 export function useChatStream() {
+  // Initialize state from localStorage if available
   const [messages, setMessages] = useState([]);
   const [conversationId, setConversationId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileCitations, setFileCitations] = useState({});
+
+  // Load data from localStorage on initial render
+  useEffect(() => {
+    if (!isLocalStorageAvailable()) {
+      console.warn("localStorage is not available, persistence disabled");
+      return;
+    }
+
+    try {
+      const savedData = localStorage.getItem(STORAGE_KEY);
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+
+        // Validate the structure of loaded data
+        if (Array.isArray(parsedData.messages)) {
+          setMessages(parsedData.messages);
+        }
+
+        if (parsedData.conversationId) {
+          setConversationId(parsedData.conversationId);
+        }
+
+        if (
+          parsedData.fileCitations &&
+          typeof parsedData.fileCitations === "object"
+        ) {
+          setFileCitations(parsedData.fileCitations);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading chat data from localStorage:", error);
+      // If data is corrupted, clear it
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {
+        // Ignore cleanup errors
+      }
+    }
+  }, []);
 
   /**
    * Submits a message to the chat API and processes the streaming response
@@ -202,6 +282,48 @@ export function useChatStream() {
     [conversationId, isSubmitting, messages.length]
   );
 
+  // Save data to localStorage whenever it changes
+  useEffect(() => {
+    // Skip saving if there are no messages (empty state)
+    if (messages.length === 0 && !conversationId) {
+      return;
+    }
+
+    // Skip if localStorage is not available
+    if (!isLocalStorageAvailable()) {
+      return;
+    }
+
+    // Prepare data for storage
+    const dataToSave = {
+      messages,
+      conversationId,
+      fileCitations,
+    };
+
+    // Use our safe storage function
+    safelyStoreData(STORAGE_KEY, dataToSave);
+  }, [messages, conversationId, fileCitations]);
+
+  /**
+   * Clears the current conversation data and starts a new conversation
+   */
+  const startNewConversation = useCallback(() => {
+    // Reset state
+    setMessages([]);
+    setConversationId(null);
+    setFileCitations({});
+
+    // Clear localStorage if available
+    if (isLocalStorageAvailable()) {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (error) {
+        console.error("Error clearing chat data from localStorage:", error);
+      }
+    }
+  }, []);
+
   return {
     messages,
     setMessages,
@@ -209,5 +331,6 @@ export function useChatStream() {
     isSubmitting,
     fileCitations,
     submitMessage,
+    startNewConversation,
   };
 }

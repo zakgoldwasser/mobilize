@@ -10,7 +10,7 @@ export default function SuggestedMessages({ onMessageSelect }) {
   // Array of suggested messages
   const suggestions = [
     "Find volunteer oppurtunities in MD",
-    "How do I implement file uploads?",
+    "Events for water quality",
     "Find environmental petitions",
     "Protests in CA",
     "Virtual events for immigrants rights",

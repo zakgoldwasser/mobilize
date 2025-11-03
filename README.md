@@ -1,5 +1,12 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Features
+
+- Chat interface with streaming responses
+- File citation support
+- Conversation persistence using localStorage
+- New conversation button to start fresh chats
+
 ## Getting Started
 
 First, run the development server:
