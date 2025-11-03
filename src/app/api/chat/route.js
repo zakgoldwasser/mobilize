@@ -47,6 +47,14 @@ export async function POST(request) {
           });
           controller.enqueue(encoder.encode(`data: ${conversationIdData}\n\n`));
 
+          const systemPrompt = `
+            You are an assistant on the mobilize.us platform. 
+            Answer user's questions about events, volunteer opportunities, petitions, and community groups. 
+            Encourage them to participate.
+            Todays date is ${new Date().toLocaleDateString()}.
+            If the event is currently happening, specify that.
+          `;
+
           // Call OpenAI API with streaming
           const openaiStream = await openai.responses.create({
             model: "gpt-4o",
@@ -57,8 +65,7 @@ export async function POST(request) {
                 max_num_results: 20,
               },
             ],
-            instructions:
-              "You are an assistant on the mobilize.us platform, answer user's questions about events, volunteer opportunities, petitions, and community groups. Encourage them to participate",
+            instructions: systemPrompt,
             input: message,
             conversation: conversationId,
             stream: true,
