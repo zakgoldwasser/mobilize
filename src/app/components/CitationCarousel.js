@@ -8,8 +8,6 @@ export default function CitationCarousel({ citations = [] }) {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
 
-  if (!citations || citations.length === 0) return null;
-
   // Check if scroll arrows should be displayed
   useEffect(() => {
     const checkScrollPosition = () => {
@@ -32,6 +30,9 @@ export default function CitationCarousel({ citations = [] }) {
       return () => container.removeEventListener("scroll", checkScrollPosition);
     }
   }, [citations]);
+
+  // Early return if no citations
+  if (!citations || citations.length === 0) return null;
 
   const handleScroll = (direction) => {
     if (!scrollContainerRef.current) return;
