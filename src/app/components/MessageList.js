@@ -10,12 +10,14 @@ import SuggestedMessages from "./SuggestedMessages";
  * @param {Array} props.messages - Array of message objects
  * @param {Object} props.fileCitations - Object mapping message indices to file citations
  * @param {Function} props.onMessageSubmit - Function to handle message submission
+ * @param {boolean} props.isSubmitting - Whether a message is currently being submitted
  * @returns {JSX.Element} - The rendered message list component
  */
 export default function MessageList({
   messages,
   fileCitations,
   onMessageSubmit,
+  isSubmitting,
 }) {
   const messagesEndRef = useRef(null);
 
@@ -40,6 +42,11 @@ export default function MessageList({
           key={`message-${index}`}
           message={message}
           citations={fileCitations[index] || []}
+          isStreaming={
+            isSubmitting &&
+            index === messages.length - 1 &&
+            message.role === "assistant"
+          }
         />
       ))}
 

@@ -20,6 +20,7 @@ export default function Home() {
           messages={messages}
           fileCitations={fileCitations}
           onMessageSubmit={submitMessage}
+          isSubmitting={isSubmitting}
         />
 
         {/* Input Area */}
