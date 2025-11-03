@@ -11,9 +11,9 @@ export default function SuggestedMessages({ onMessageSelect }) {
   const suggestions = [
     "Find volunteer oppurtunities in MD",
     "How do I implement file uploads?",
-    "Opportunities focused on water quality",
-    "What are file citations?",
-    "How can I customize the UI?",
+    "Find environmental petitions",
+    "Protests in CA",
+    "Virtual events for immigrants rights",
   ];
 
   return (
@@ -26,8 +26,7 @@ export default function SuggestedMessages({ onMessageSelect }) {
           <button
             key={`suggestion-${index}`}
             onClick={() => onMessageSelect(suggestion)}
-            className="cursor-pointer px-5 py-2 text-left bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 
-                      rounded-full transition-colors duration-200 text-zinc-700 dark:text-zinc-300"
+            className="cursor-pointer px-5 py-2 text-left bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-full transition-colors duration-200 text-zinc-700 dark:text-zinc-300"
           >
             {suggestion}
           </button>
